@@ -1,0 +1,47 @@
+# ---- Quartus generated/regenerable ----
+db/
+incremental_db/
+output_files/
+simulation/
+greybox_tmp/
+*.rpt
+*.summary
+*.smsg
+*.sld
+*.qws
+*.done
+*.pin
+*.jdi
+*.pof
+*.sof.bak
+*.qarlog
+*.qxp
+*.htm.bak
+c5_pin_model_dump.txt
+PLLJ_PLLSPE_INFO.txt
+*.eqn
+*.pll
+tmp-clearbox/
+
+# ---- ModelSim / simulation ----
+*.wlf
+*.vcd
+transcript
+work/
+*.vstf
+
+# ---- Python ----
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+venv/
+*.npy
+
+# ---- OS / editor cruft ----
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+
+# ---- backup files from editing ----
+*.bak
