@@ -45,3 +45,6 @@ Thumbs.db
 
 # ---- backup files from editing ----
 *.bak
+
+!software/feat_mean.npy
+!software/feat_std.npy
