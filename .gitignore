@@ -48,3 +48,4 @@ Thumbs.db
 
 !software/feat_mean.npy
 !software/feat_std.npy
+!weights/*.npy

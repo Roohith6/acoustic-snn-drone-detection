@@ -14,7 +14,7 @@ through synthesis and deployment on a Terasic DE2-115 FPGA board.
 - **Status:** RTL verified in simulation (bit-exact against the golden
   software reference), synthesized clean, deployed and tested on hardware
   for 4 pre-loaded sample cases.
-- **Accuracy:** 97.9% classification accuracy on the test set.
+- **Accuracy:** 92.7% classification accuracy (mathematically balanced for hardware clamping) on the test set.
 
 ## Architecture
 

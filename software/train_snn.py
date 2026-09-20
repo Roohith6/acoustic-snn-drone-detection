@@ -76,12 +76,12 @@ N_OUTPUT = 2                           # drone, ambient
 # UPDATE THIS to wherever you cloned/downloaded saraalemadi/DroneAudioDataset.
 # The path below matches the machine the currently-shipped weights came from
 # -- change it to your own download location.
-DATASET_DIR = os.path.expanduser("~/Projects 1/FPGA_Acoustic_SNN/DroneAudioDataset/Binary_Drone_Audio")
+DATASET_DIR = "E:/snn_2/DroneAudioDataset/Binary_Drone_Audio"
 # it also contains Multiclass_Drone_Audio/, which has its own "unknown" folder
 # that would silently get mixed into the ambient class otherwise (confirmed
 # with a mock-structure test in inspect_encoding.py's development).
 LABEL_MAP = {"yes_drone": 1, "unknown": 0} # matches your real dataset's actual folder names
-USE_SYNTHETIC = True                    # Using synthetic dataset for local execution
+USE_SYNTHETIC = False                    # Using real dataset for local execution
 
 
 # -----------------------------------------------------------------------

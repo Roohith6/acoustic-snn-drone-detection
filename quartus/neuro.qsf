@@ -587,7 +587,6 @@ set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_RO
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "2.5 V"
 set_global_assignment -name SOURCE_FILE de2_top_pins.qsf
-set_global_assignment -name VERILOG_FILE de2_top.v
 set_global_assignment -name SOURCE_FILE threshold_drone2.mem
 set_global_assignment -name SOURCE_FILE threshold_ambient2.mem
 set_global_assignment -name SDC_FILE neuro.sdc
@@ -598,14 +597,19 @@ set_global_assignment -name SOURCE_FILE W1_folded_input_hidden.mem
 set_global_assignment -name SOURCE_FILE sigmoid_lut.mem
 set_global_assignment -name SOURCE_FILE b2_output.mem
 set_global_assignment -name SOURCE_FILE b1_folded_hidden.mem
-set_global_assignment -name VERILOG_FILE weight_mem.v
-set_global_assignment -name VERILOG_FILE threshold_mem.v
-set_global_assignment -name VERILOG_FILE spike_gated_mac.v
-set_global_assignment -name VERILOG_FILE snn_top.v
-set_global_assignment -name VERILOG_FILE sigmoid_lut.v
-set_global_assignment -name VERILOG_FILE rate_encoder.v
-set_global_assignment -name VERILOG_FILE output_layer.v
-set_global_assignment -name VERILOG_FILE lfsr16.v
-set_global_assignment -name VERILOG_FILE hidden_neuron.v
-set_global_assignment -name VERILOG_FILE combine_scale.v
+set_global_assignment -name VERILOG_FILE ../rtl/aer_buffer.v
+set_global_assignment -name VERILOG_FILE ../rtl/de2_top.v
+set_global_assignment -name VERILOG_FILE ../rtl/early_exit.v
+set_global_assignment -name VERILOG_FILE ../rtl/hidden_neuron.v
+set_global_assignment -name VERILOG_FILE ../rtl/lfsr16.v
+set_global_assignment -name VERILOG_FILE ../rtl/lif_neuron_array.v
+set_global_assignment -name VERILOG_FILE ../rtl/lif_output.v
+set_global_assignment -name VERILOG_FILE ../rtl/output_layer.v
+set_global_assignment -name VERILOG_FILE ../rtl/rate_encoder.v
+set_global_assignment -name VERILOG_FILE ../rtl/snn_top.v
+set_global_assignment -name VERILOG_FILE ../rtl/spike_gated_mac.v
+set_global_assignment -name VERILOG_FILE ../rtl/threshold_mem.v
+set_global_assignment -name VERILOG_FILE ../rtl/v_mem.v
+set_global_assignment -name VERILOG_FILE ../rtl/weight_mem.v
+
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
