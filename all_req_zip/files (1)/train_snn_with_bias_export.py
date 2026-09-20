@@ -81,7 +81,7 @@ DATASET_DIR = os.path.expanduser("~/Projects 1/FPGA_Acoustic_SNN/DroneAudioDatas
 # that would silently get mixed into the ambient class otherwise (confirmed
 # with a mock-structure test in inspect_encoding.py's development).
 LABEL_MAP = {"yes_drone": 1, "unknown": 0} # matches your real dataset's actual folder names
-USE_SYNTHETIC = True                    # Using synthetic dataset for local execution
+USE_SYNTHETIC = False                   # now using the real dataset
 
 
 # -----------------------------------------------------------------------
@@ -270,7 +270,7 @@ class TwoLayerNet:
 
     def forward(self, X):
         z1 = X @ self.W1 + self.b1
-        a1 = np.maximum(0, z1)             # ReLU hidden "firing rate"
+        a1 = self.sigmoid(z1)              # hidden "firing rate" in [0,1]
         z2 = a1 @ self.W2 + self.b2
         a2 = self.softmax(z2)
         return z1, a1, z2, a2
@@ -292,7 +292,7 @@ class TwoLayerNet:
         db2 = dz2.sum(axis=0)
 
         da1 = dz2 @ self.W2.T
-        dz1 = da1 * (z1 > 0)               # ReLU derivative
+        dz1 = da1 * a1 * (1 - a1)          # sigmoid derivative
         dW1 = X.T @ dz1
         db1 = dz1.sum(axis=0)
 
@@ -507,60 +507,3 @@ if __name__ == "__main__":
 
     print("\nDone. .mem files are ready for synapse_memory.v; .npy files kept "
           "for re-export at a different fixed-point scale if needed.")
-# =============================================================================
-# APPEND this to train_snn_with_bias_export.py, right after the existing
-# "STAGE: Weight Export" block (after the b1/b2 export lines already added).
-#
-# Folds input standardization (feat_mean, feat_std from standardize()) into
-# W1/b1 so raw_feature @ W1_folded + b1_folded == standardized_feature @ W1 + b1
-# exactly. No hardware change needed -- just corrected .mem files.
-# =============================================================================
-
-print("\n" + "=" * 70)
-print("STAGE: Fold input standardization into W1/b1 (for hardware)")
-print("=" * 70)
-
-# feat_mean, feat_std are already in scope from:
-#   X_train, X_val, X_test, (feat_mean, feat_std) = standardize(X_train, X_val, X_test)
-W1_folded = net.W1 / feat_std[:, None]                       # (640, 128)
-b1_folded = net.b1 - (feat_mean / feat_std) @ net.W1          # (128,)
-
-export_weights_for_verilog(W1_folded, os.path.join(out_dir, "W1_folded_input_hidden.mem"))
-export_weights_for_verilog(b1_folded.reshape(1, -1), os.path.join(out_dir, "b1_folded_hidden.mem"))
-np.save(os.path.join(out_dir, "W1_folded_raw.npy"), W1_folded)
-np.save(os.path.join(out_dir, "b1_folded_raw.npy"), b1_folded)
-np.save(os.path.join(out_dir, "feat_mean.npy"), feat_mean)   # sent too, for cross-checking on my end
-np.save(os.path.join(out_dir, "feat_std.npy"), feat_std)
-
-print("Wrote W1_folded_input_hidden.mem, b1_folded_hidden.mem (+ .npy versions)")
-print("These REPLACE W1_input_hidden.mem/b1_hidden.mem for hardware use.")
-print("W2/b2 are unaffected -- standardization only touches the input layer.")
-
-# =============================================================================
-# STAGE: SNN LIF Threshold Balancing
-# =============================================================================
-print("\n" + "=" * 70)
-print("STAGE: SNN LIF Threshold Balancing (Diehl et al.)")
-print("=" * 70)
-
-# Compute max activations over the training set for threshold balancing
-z1_train = X_train @ net.W1 + net.b1
-a1_train = np.maximum(0, z1_train)
-a1_max = a1_train.max()
-
-z2_train = a1_train @ net.W2 + net.b2
-a2_max = np.maximum(0, z2_train).max()
-
-print(f"Hidden layer max activation (ReLU): {a1_max:.4f}")
-print(f"Output layer max activation (ReLU): {a2_max:.4f}")
-
-# For hardware, we can use these as thresholds.
-# W1_folded and b1_folded were exported above. 
-# We just need to export V_thresh_hidden and V_thresh_output
-# The hardware uses Q9.7 or similar for z1_q. W1 has scale=199.6272.
-# However, for a generic LIF, we can just quantize the threshold with the SAME scale as the weights it's compared against.
-# We will do a more robust conversion in snn_to_lif_convert.py if needed, but let's save the raw floats here.
-np.save(os.path.join(out_dir, "a1_max.npy"), a1_max)
-np.save(os.path.join(out_dir, "a2_max.npy"), a2_max)
-
-print("Saved a1_max.npy and a2_max.npy for LIF conversion.")

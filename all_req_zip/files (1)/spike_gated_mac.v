@@ -37,7 +37,7 @@ module spike_gated_mac #(
     output reg  signed [ACC_WIDTH-1:0] acc_rd_data
 );
 
-    localparam NBITS_N = $clog2(N_NEURONS+1);
+    localparam NBITS_N = $clog2(N_NEURONS);
     localparam NBITS_H = $clog2(N_POST);
 
     reg signed [ACC_WIDTH-1:0] acc [0:N_POST-1];

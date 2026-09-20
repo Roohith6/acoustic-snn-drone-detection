@@ -17,6 +17,6 @@
 # real target instead of the meaningless 1GHz default.
 # =============================================================================
 
-create_clock -name CLOCK_50 -period 20.000 [get_ports {CLOCK_50}]
+create_clock -name clk -period 20.000 [get_ports {clk}]
 
 derive_clock_uncertainty

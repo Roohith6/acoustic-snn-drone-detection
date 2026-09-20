@@ -92,27 +92,27 @@ module de2_top (
 
     // ---- core ----
     wire done, winner;
-    wire [7:0] spike_cnt_ambient, spike_cnt_drone;
-    wire [5:0] t_exit;
+    wire signed [63:0] z2_total0, z2_total1; // unused on the board, kept for debug/simulation parity
 
     snn_top #(
-        .N_POST(32),
-        .THRESH_MEM_FILE_0("synthetic_sample.mem"),   // code 00 -- synthetic sample
+        // NOTE: fill these in with real paths relative to your Quartus
+        // project directory before compiling -- these are placeholders
+        // matching the file NAMES already generated and verified, not
+        // necessarily your project's actual folder layout.
+        .THRESH_MEM_FILE_0("threshold_ambient.mem"),   // code 00 -- verified sample
         .THRESH_MEM_FILE_1("threshold_drone.mem"),     // code 01 -- verified sample
         .THRESH_MEM_FILE_2("threshold_ambient2.mem"),  // code 10 -- verified sample
         .THRESH_MEM_FILE_3("threshold_drone2.mem"),    // code 11 -- verified sample
         .W1_MEM_FILE("W1_folded_input_hidden.mem"),
+        .B1_MEM_FILE("b1_folded_hidden.mem"),
+        .SIGMOID_MEM_FILE("sigmoid_lut.mem"),
         .W2_MEM_FILE("W2_hidden_output.mem"),
-        .B1_MEM_FILE("b1_lif.mem"),
-        .B2_MEM_FILE("b2_lif.mem"),
-        .V_THRESH_HIDDEN("V_thresh_hidden.mem"),
-        .V_THRESH_OUTPUT("V_thresh_output.mem")
+        .B2_MEM_FILE("b2_output.mem")
     ) u_snn (
         .clk(clk), .rst_n(rst_n),
         .start(start_pulse), .sample_sel(sample_sel),
         .done(done), .winner(winner),
-        .spike_cnt_ambient(spike_cnt_ambient), .spike_cnt_drone(spike_cnt_drone),
-        .t_exit(t_exit)
+        .z2_total0(z2_total0), .z2_total1(z2_total1)
     );
 
     // ---- result_valid gate: LEDs stay off until first real result ----
