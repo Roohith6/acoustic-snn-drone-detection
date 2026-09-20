@@ -6,7 +6,7 @@ This project bridges the gap between software Machine Learning and physical sili
 
 ---
 
-## ?? Architecture Pipeline
+##  Architecture Pipeline
 
 1. **Audio Preprocessing (Software):** 
    - 16 kHz mono audio is processed using STFT (256-pt FFT, hop 64, Hann window).
@@ -20,7 +20,7 @@ This project bridges the gap between software Machine Learning and physical sili
 
 ---
 
-## ??? The "Negative Bias Clamping" Fix
+##  The "Negative Bias Clamping" Fix
 Converting a standard PyTorch ANN to a physical SNN introduces hardware challenges. During initial testing, the FPGA suffered from an 85% False Positive rate (predicting "Drone" for background noise). 
 
 **The Cause:** The PyTorch model relied heavily on negative bias weights to cancel out background noise. However, the hardware SNN logic clamped membrane voltages at `0` (`v < 0 ? 0`). During silent periods in the audio, the hardware lost the built-up negative noise-canceling voltage, causing the neurons to spike far too easily when a sound finally arrived.
@@ -33,7 +33,7 @@ We mathematically bridged this gap in `snn_to_lif_convert.py` by:
 
 ---
 
-## ?? Repository Structure
+##  Repository Structure
 
 * `/software/`: Python scripts for PyTorch ANN training (`train_snn.py`), dataset building, and the critical `snn_to_lif_convert.py` script that transforms float weights into 16-bit integer `.mem` files.
 * `/rtl/`: The Verilog hardware source code.
@@ -46,7 +46,7 @@ We mathematically bridged this gap in `snn_to_lif_convert.py` by:
 
 ---
 
-## ?? How to Run
+##  How to Run
 
 ### 1. Simulation (ModelSim)
 To view the live neural spikes and accumulation counters:
@@ -65,14 +65,14 @@ To view the live neural spikes and accumulation counters:
    - **`LEDG[1]` turns ON:** Ambient Noise Detected.
    - **`LEDG[0]` turns ON:** Drone Detected!
 
-## ?? How It Works (The Mechanics)
+##  How It Works (The Mechanics)
 This system is designed for ultra-low-power "Edge AI" processing. Rather than doing heavy floating-point math like a traditional GPU, this FPGA mimics the biological brain using spikes of electricity:
 1. **The Senses:** Audio is pre-processed into 640 distinct frequency buckets.
 2. **The Synapses (Rate Encoding):** The FPGA uses a random number generator (LFSR) to turn those frequencies into electrical pulses. A loud frequency might fire a spike 90% of the time, while a quiet frequency fires 5% of the time.
 3. **The Brain (Spike-Gated MAC):** The hidden neurons ONLY consume power when they receive a spike. If no spike arrives, the hardware stays asleep. When a spike hits, the neuron adds its specific "weight" to its internal voltage.
 4. **The Decision:** Once a hidden neuron reaches 111,920 millivolts of accumulation, it fires a spike into the final Output Layer. Over 50 clock cycles, the Drone and Ambient output neurons race to accumulate the most spikes. The highest count wins the classification.
 
-## ?? Future Roadmap & Patent Potential
+##  Future Roadmap & Patent Potential
 This project serves as the baseline architecture for a patentable, ultra-low-power acoustic defense system. Future iterations to solidify the novelty and commercial viability include:
 
 1. **Native SNN Training (Surrogate Gradients):** Transitioning from ANN-to-SNN conversion to native snnTorch training. Training with time-dynamics and leak-rates inherently built-in will allow us to drop the inference time from 50 timesteps down to <10 timesteps, drastically reducing power consumption.
