@@ -96,15 +96,15 @@ module de2_top (
     wire [5:0] t_exit;
 
     snn_top #(
-        .N_POST(32),
-        .THRESH_MEM_FILE_0("synthetic_sample.mem"),   // code 00 -- synthetic sample
-        .THRESH_MEM_FILE_1("threshold_drone.mem"),     // code 01 -- verified sample
-        .THRESH_MEM_FILE_2("threshold_ambient2.mem"),  // code 10 -- verified sample
-        .THRESH_MEM_FILE_3("threshold_drone2.mem"),    // code 11 -- verified sample
-        .W1_MEM_FILE("W1_folded_input_hidden.mem"),
-        .W2_MEM_FILE("W2_hidden_output.mem"),
-        .B1_MEM_FILE("b1_lif.mem"),
-        .B2_MEM_FILE("b2_lif.mem"),
+        .N_POST(128),                                  // UPGRADED: 128-neuron native SNN (was 32)
+        .THRESH_MEM_FILE_0("threshold_ambient.mem"),   // code 00 -- ambient sample
+        .THRESH_MEM_FILE_1("threshold_drone.mem"),     // code 01 -- drone sample
+        .THRESH_MEM_FILE_2("threshold_ambient2.mem"),  // code 10 -- ambient sample 2
+        .THRESH_MEM_FILE_3("threshold_drone2.mem"),    // code 11 -- drone sample 2
+        .W1_MEM_FILE("w1_128.mem"),                    // Native SNN trained on Kaggle (F1=0.85)
+        .W2_MEM_FILE("w2_128.mem"),
+        .B1_MEM_FILE("b1_128.mem"),
+        .B2_MEM_FILE("b2_128.mem"),
         .V_THRESH_HIDDEN("V_thresh_hidden.mem"),
         .V_THRESH_OUTPUT("V_thresh_output.mem")
     ) u_snn (

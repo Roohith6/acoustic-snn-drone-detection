@@ -14,7 +14,7 @@ module tb_top;
 
     always #10 clk = ~clk;
 
-    wire [31:0] hid_spikes = uut.u_snn.u_hidden.out_spike_bus;
+    wire [127:0] hid_spikes = uut.u_snn.u_hidden.out_spike_bus;
 
     initial begin
         clk = 0;
